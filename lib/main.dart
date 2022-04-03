@@ -1,9 +1,11 @@
+import 'package:car_app/additional.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:car_app/stats.dart';
 import 'package:car_app/maps.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:car_app/login.dart';
 
 
 void main() async{
@@ -40,10 +42,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -56,6 +59,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool _hasBeenPressed= false;
+  String maintencen_days = "";
+  String bat_level = "";
+  String miles_left = "";
 
   @override
   Widget build(BuildContext context) {
@@ -106,102 +112,99 @@ class _MyHomePageState extends State<MyHomePage> {
               circularStrokeCap: CircularStrokeCap.round,
               progressColor: Colors.green,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Card(
-                    color: Colors.white,
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width/3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Remaining',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('Miles'),
-                            SizedBox(height: 10),
-                            Center(
-                              child: RichText(
-                                text: TextSpan(children: [
-                                  TextSpan(
-                                      text: '50',
-                                      style: TextStyle(
-                                          fontSize: 50,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width/20,
-                  ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width/3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Maintenance',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('Check in (days)'),
-                            SizedBox(height: 10),
-                            Center(
-                              child: Text('15',
-                                  style: TextStyle(
-                                      fontSize: 50,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black)),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-             /* StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('Battery Level').snapshots(),
 
+             StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('Battery Level').snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
                   }
-                  print(snapshot);
-                  return ListView(
-                    children: snapshot.data!.docs.map((document) {
-                      print(document['Battery Level']);
-                      return Container(
+                  List<String> result = [];
+                  snapshot.data!.docs.forEach((doc) {
+                    result.add(doc["Battery Level"].toString());
+                    result.add(doc["Days left for maintenance"].toString());
+                    result.add(doc["Miles Left"].toString());
+                  });
 
-                        child: Center(child: Text(document['Battery Level'])),
-                      );
-                    }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Card(
+                          color: Colors.white,
+                          elevation: 20,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width/3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Remaining',
+                                      style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('Miles'),
+                                  SizedBox(height: 10),
+                                  Center(
+                                    child: RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                            text: result[2],
+                                            style: TextStyle(
+                                                fontSize: 50,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black)),
+                                      ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width/20,
+                        ),
+                        Card(
+                          color: Colors.white,
+                          elevation: 20,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width/3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Maintenance',
+                                      style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('Check in (days)'),
+                                  SizedBox(height: 10),
+                                  Center(
+                                    child: Text(result[1],
+                                        style: TextStyle(
+                                            fontSize: 50,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
-              ),*/
+              ),
           ],
         ),
       ),
@@ -260,6 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   IconButton(
                     color: Colors.white,
                     onPressed: (){
+                      Navigator.push(context , MaterialPageRoute(builder: (context) => additional()));
 
                     },
                     iconSize: 30,

@@ -3,6 +3,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:car_app/main.dart';
 import 'package:car_app/maps.dart';
 import 'package:mdi/mdi.dart';
+import 'package:car_app/additional.dart';
 
 
 
@@ -95,7 +96,7 @@ class __StatsPage extends State<_StatsPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.only(top:20.0,left: 20.0, right:20.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height/4.5,
@@ -295,8 +296,14 @@ class __StatsPage extends State<_StatsPage> {
 
                                   ),
                                 ],),
+
                             ],),
-                        )
+                        ),
+                        Text("Safety Score: 47",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black),),
                       ],
                     ),
                   ),
@@ -517,7 +524,7 @@ class __StatsPage extends State<_StatsPage> {
                 IconButton(
                   color: Colors.white,
                   onPressed: (){
-
+                    Navigator.push(context , MaterialPageRoute(builder: (context) => additional()));
                   },
                   iconSize: 30,
                   icon: Icon(Icons.manage_search_rounded),

@@ -6,6 +6,7 @@ import 'package:car_app/main.dart';
 import 'package:location/location.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:car_app/additional.dart';
 
 
 
@@ -202,7 +203,7 @@ class _MapScreenState extends State<_MapsPage> {
                 IconButton(
                   color: Colors.white,
                   onPressed: (){
-
+                    Navigator.push(context , MaterialPageRoute(builder: (context) => additional()));
                   },
                   iconSize: 30,
                   icon: Icon(Icons.manage_search_rounded),
